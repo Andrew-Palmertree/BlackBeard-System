@@ -75,7 +75,7 @@ $ python -V
 ```
 I got the following results from running python -V.
 
-![Alt text](test.jpg)
+<img width="503" alt="python_version" src="https://github.com/w-410berry/Blackbeard-System/assets/66178969/9aa92d15-ab7a-4712-9a47-9c83f6dc6488">
 
 ## 2. Install and activate the virtual environment
 We want to create a virtual environment so that we can isolate the Python environment and install specific packages for the project without affecting the root environment. Virtual environments are particularly useful for testing, creating backups, and enhancing security. To create a virtual environment for our real-time handwritten recognition project, I used the following commands:
@@ -103,7 +103,7 @@ $source env/bin/activate
 
 Below is a demonstration that the virtual environment can be activated through the project directory.
 
-![Alt text](test2.jpg)
+![image](https://github.com/w-410berry/Blackbeard-System/assets/66178969/0ebe2ba1-08fd-4eb6-865a-93bf20dab3c8)
 
 ## 3. Installing Packages in Virtual Environment 
 Next, we must install the packages required for the virtual environment.To install TensorFlow, I used WinSCP software to transfer a file called tensorflow-2.5.0-cp37-none-linux_armv7l.whl from my laptop to the Raspberry Pi project folder. The wheel file contains all the necessary files to install TensorFlow 2.5.0 on an ARM7L embedded system.
@@ -201,7 +201,7 @@ $ python3 // run in the command prompt to open up the Python shell
 Make sure VNC is on your Pi. There should be an icon on the top right with the big "R" symbol or go to the "internet" tab at the top left and click VNC viewer. 
 If VNC viewer is not shown then follow a online guide to install VNC viewer sever on the Pi. It should already be installed on your Pi.
 
-![Alt text](image.png)
+<img width="546" alt="VNC_1" src="https://github.com/w-410berry/Blackbeard-System/assets/66178969/32ad97e4-4dc8-4e61-ad5d-160cbe421f27">
 
 Once you know VNC server is installed then follow the following steps:
 
@@ -216,7 +216,7 @@ in the terminal and navigated to "Interface Options" >>> "VNC" >>> "enable".
 Note: To see the Pi Camera remotely I had to go to the server Raspberry Pi VNC and press: 
 #### menu (three lines on the top right) >>> options >>> Troubleshooting >>> Enable direct capture mode.
 
-![Alt text](image-1.png)
+<img width="540" alt="VNC_2" src="https://github.com/w-410berry/Blackbeard-System/assets/66178969/914d3148-9e92-4146-9e23-2282fc0cee6c">
 
 #### ON THE COMPUTER:
 
