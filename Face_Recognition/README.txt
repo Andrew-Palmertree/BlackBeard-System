@@ -107,4 +107,8 @@ The folder recognizer and pickles are used for this model
 Used to detect faces with the cascade model. Again this model doesn't work as well as the ResNet50 model
 The folder recognizer and pickles are used for this model
 
+- image_augmentation.py:
+augment the data for the cascade model
+not needed for the ResNet model
+
 
