@@ -5,6 +5,12 @@ Hopefully this helps!
 
 Quick note:
 
+-for the Unknown class I found the images from this google drive:
+https://drive.google.com/drive/folders/0B7EVK8r0v71pTUZsaXdaSnZBZzg?resourcekey=0-rJlzl934LzC-Xp28GeIBzQ
+
+This is the page that I found the google link:
+https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html
+
 -test4.h5
 is the tensorflow model I trained for the demo
 
@@ -110,5 +116,6 @@ The folder recognizer and pickles are used for this model
 - image_augmentation.py:
 augment the data for the cascade model
 not needed for the ResNet model
+
 
 
