@@ -96,3 +96,27 @@ def servo_write(angle,pwm_obj):
 	pwm = (angle/18) + 2.5
 	pwm_obj.ChangeDutyCycle(pwm)
 	print(f"angle: {angle}\tpwm: {pwm}")
+
+def open_chute(pwm_obj):
+	""" 
+ 	Opens the package chute door 
+  	"""
+	servo_write(60,pwm_obj)
+
+def close_chute(pwm_obj):
+	""" 
+ 	Closes the package chute door
+  	"""
+	servo_write(0,pwm_obj)
+
+def unlock_door(pwm_obj):
+	""" 
+ 	Unlocks the deadbolt on the door
+  	"""
+	servo_write(60,pwm_obj)
+
+def lock_door(pwm_obj):
+	""" 
+ 	Locks the deadbolt on the door
+  	"""
+	servo_write(0,pwm_obj)
