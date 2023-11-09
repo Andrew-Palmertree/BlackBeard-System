@@ -12,6 +12,7 @@ import keras_vggface.utils
 import PIL
 import os
 import os.path
+from keras.layers import Flatten, Dense
 
 # Set the environment variable to allow duplicated libraries
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
