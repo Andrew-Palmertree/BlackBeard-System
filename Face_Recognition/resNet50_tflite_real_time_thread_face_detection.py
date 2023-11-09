@@ -36,9 +36,11 @@ output_details = interpreter.get_output_details()
 #cascade classifier
 face_classifier = cv2.CascadeClassifier('cascades/data/haarcascade_frontalface_default.xml')
 
+# Initialize the global variable servo_door
+servo_door = 0
 
 def detect_bounding_box(vid):
-    
+    global servo_door    
     #cascade classifier
     faces = face_classifier.detectMultiScale(vid, 1.3, 5)
     
@@ -87,12 +89,26 @@ def detect_bounding_box(vid):
         # Map the class with the highest probability to a name
         if max_prob_class == "Class 0":
             name = "Andrew"
+            if servo_door == 0:
+                servo_door = 1
         elif max_prob_class == "Class 1":
             name = "Parbin"
+            if servo_door == 0:
+                servo_door = 1
+
         elif max_prob_class == "Class 2":
             name = "Unknown"
         elif max_prob_class == "Class 3":
             name = "Will"
+            if servo_door == 0:
+                servo_door = 1
+
+
+        # Check if the door should be opened
+        if servo_door == 1:
+            print("Door is opening")
+            servo_door = 0  
+
 
         # Ensure x, y coordinates are within the frame bounds
         if x >= 0 and y >= 0 and x + w < vid.shape[1] and y + h < vid.shape[0]:
