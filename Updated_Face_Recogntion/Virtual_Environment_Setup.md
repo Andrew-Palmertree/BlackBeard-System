@@ -173,17 +173,6 @@ If you are using the a pi camera install their packages:
 $ pip install picamera
 ```
 
-Make sure everything is working with no errors:
-$ python3 // run in the command prompt to open up the Python shell
->>> import tensorflow as tf
->>> tf._version_
->>> import cv2
->>> cv2._version_
->>> import keras
->>> import numpy as np
-# to exit run exit() or quit()
-```
-
 ## 4. (optional) Setting up VNC to see you raspberry pi display on your laptop
 
 Make sure VNC is on your Pi. There should be an icon on the top right with the big "R" symbol or go to the "internet" tab at the top left and click VNC viewer. 
