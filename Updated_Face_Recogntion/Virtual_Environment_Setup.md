@@ -173,11 +173,6 @@ If you are using the a pi camera install their packages:
 $ pip install picamera
 ```
 
-Now to install Keras for Tensorflow 2.5.0:
-```
-$ pip uninstall keras
-$ pip install keras==2.4.3
-
 Make sure everything is working with no errors:
 $ python3 // run in the command prompt to open up the Python shell
 >>> import tensorflow as tf
