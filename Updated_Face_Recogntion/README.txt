@@ -40,6 +40,15 @@ Now run the tensorflow lite model with:
 tensorflow_lite.py
 (reason why we want to run it in tensorflow lite beacause this will allow us to run the model with the Google TPU to speed up real-time processing)
 
+to add a new user or train the model with more data but have the same amount of users run:
+new_user.py
+NOTE:
+This line of code updates the amount of users in the system. So with the data in pubfig/train there are only 4 users so change this variable to 4 or the number of users you have.
+nb_class = 6  # Number of old classes + 1 for the new class
+
+Change the "class_name" to have the right number of users equal to "nb_class" from above.
+new_class_dataset = tf.keras.preprocessing.image_dataset_from_directory('pubfig/train', shuffle=True, batch_size=8, image_size=(224,224), class_names=['1-Andrew', '2-Parbin', '3-Unknown', '4-Will', '5-Hannah', '6-Suzanne'])
+
 --------------------------------------------------------------------
 Extra:
 We can use the:
