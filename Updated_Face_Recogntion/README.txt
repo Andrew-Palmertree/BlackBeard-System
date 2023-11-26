@@ -1,6 +1,8 @@
 Hello!
+Note the .h5 tensorflow models and tenserflow lite models couldn't be uploaded to github. unzip the pubfig folder and run the train.py and then the convert.py files to get the models. 
+The name of the tensorrflow model is at the end of tensorflow.py. Copy that name and make sure it matches the model name at the beginning of the convert.py file.
 --------------------------------------------------------------------
-Make sure you have the following packages installed and the exacpt version:
+Make sure you have the following packages installed and the exact version:
 
 very important: make sure to have the 64 bit OS Bullseye 11!!!!
 
@@ -31,12 +33,12 @@ to train the tensorflow model with pubfig/train data.
 Now you can test your model with:
 tensorflow.py
 
-If the model gives accurate results when testing go ahead and conver the tensorflow model to a tensorflow lite model:
+If the model gives accurate results when testing go ahead and convert the tensorflow model to a tensorflow lite model:
 converter.py
 
 Now run the tensorflow lite model with:
 tensorflow_lite.py
-(reason why we want to run it in tensorflow lite beacause this will allow us to run the model with the Google TPU to speed up real time processing)
+(reason why we want to run it in tensorflow lite beacause this will allow us to run the model with the Google TPU to speed up real-time processing)
 
 --------------------------------------------------------------------
 Extra:
