@@ -159,3 +159,20 @@ def lock_door(pwm_obj):
 
 	servo_write(0,pwm_obj)
 
+def chute_activation(pwm_obj):
+	time.sleep(0.2)
+	open_chute(pwm_obj)
+	time.sleep(5)
+	print("sensing movement...")
+	sense_movement()
+	close_chute(pwm_obj)
+	print("finished")
+
+def lock_activation(pwm_obj):
+	time.sleep(0.2)
+	print("locking door")
+	unlock_door(pwm_obj)
+	time.sleep(3)
+	print("locking door")
+	lock_door(pwm_obj)
+	print("finished")
