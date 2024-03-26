@@ -147,7 +147,7 @@ def led_blink_on(color):
 	Begins in an OFF state, blinks the LED three times, then
 	leaves the LED ON until ledBlinkOff is ran
 	"""
-    blink_led = led
+	blink_led = led
 
 	if color=="green":
 		blink_led.color = (0, 1, 0)
@@ -155,7 +155,7 @@ def led_blink_on(color):
 		blink_led.color = (0, 0, 1)
 
 	# Blink code
-    blink_led.pulse(on_color(blink_led.color), off_color(0, 0, 0), n=3)
+	blink_led.pulse(on_color(blink_led.color), off_color(0, 0, 0), n=3)
 	"""
     for i in range(0, 3):
         blink_led.on()
@@ -169,15 +169,15 @@ def led_blink_off(color):
 	Begins in an ON state, blinks the LED three times, then
 	laeves the LED OFF until ledBlinkOn is ran
 	"""
-    blink_led = led
-
+	blink_led = led
+	
 	if color=="green":
 		ledcolor = blink_led.color = (0, 1, 0)
 	elif color=="blue":
 		ledcolor = blink_led.color = (0, 0, 1)
 
 	# Blink code
-    blink_led.pulse(on_color(ledcolor), off_color(0, 0, 0), n=3)
+	blink_led.pulse(on_color(ledcolor), off_color(0, 0, 0), n=3)
 
 
 ################################################ ULTRASONIC FUNCTIONS
@@ -187,24 +187,23 @@ def get_distance():
 	Sends an ultrasonic trigger, listens for the echo, & calculates the distance.
 	Returns distance.
 	"""
+	# send pulse to trigger pin to send ultrasound wave
+	ultrasonic.trigger()
+	print("sent trigger")
+	# start recording time & wait for ultrasound to return
+	start_time = time.time()
+	stop_time = time.time()
 
-    # send pulse to trigger pin to send ultrasound wave
-    ultrasonic.trigger()
-    print("sent trigger")
-    # start recording time & wait for ultrasound to return
-    start_time = time.time()
-    stop_time = time.time()
+	print("waiting for echo")
+	while ultrasonic.distance == 0:
+        	start_time = time.time()
+    	while ultrasonic.distance > 0:
+        	stop_time = time.time()
 
-    print("waiting for echo")
-    while ultrasonic.distance == 0:
-        start_time = time.time()
-    while ultrasonic.distance > 0:
-        stop_time = time.time()
-
-    print("calculating distance")
-    # calculate time elapsed, then multiply by speed of sound
-    dist = (stop_time - start_time) * 34300 / 2  # divide by 2 since pulse travels there and back
-    return dist
+    	print("calculating distance")
+    	# calculate time elapsed, then multiply by speed of sound
+    	dist = (stop_time - start_time) * 34300 / 2  # divide by 2 since pulse travels there and back
+    	return dist
 
 def sense_movement():
 	"""
@@ -214,47 +213,45 @@ def sense_movement():
 	"""
 
 	dist_curr = get_distance()
-    dist_prev = dist_curr
+    	dist_prev = dist_curr
 
-    start_time = time.time()
-    timer = time.time()
+    	start_time = time.time()
+    	timer = time.time()
 
-    movement_sensed = True
-    closing_timer = 0
-    present_timer = 0
+    	movement_sensed = True
+    	closing_timer = 0
+    	present_timer = 0
 
-    while (present_timer - closing_timer < TIME_NO_MOVEMENT):
-        time.sleep(TIME_SLEEP_DIST_SENS)
-        dist_prev = dist_curr  # set prev distance to current
-        dist_curr = get_distance()
-        print(f"current dist: {dist_curr}\tprevious dist: {dist_prev}")
-        movement_boolean = (dist_curr < dist_prev + 4 and dist_prev - 4 < dist_curr)
+    	while (present_timer - closing_timer < TIME_NO_MOVEMENT):
+        	time.sleep(TIME_SLEEP_DIST_SENS)
+        	dist_prev = dist_curr  # set prev distance to current
+        	dist_curr = get_distance()
+        	print(f"current dist: {dist_curr}\tprevious dist: {dist_prev}")
+        	movement_boolean = (dist_curr < dist_prev + 4 and dist_prev - 4 < dist_curr)
 
         # analyze different scenarios while sensing for pack
         if movement_boolean and movement_sensed:
-            # no movement detected & movement previously detected
-            # start logging time that there is no movement inside chute
-            closing_timer = time.time()
-            present_timer = closing_timer
-            movement_sensed = False
+         	# no movement detected & movement previously detected
+        	# start logging time that there is no movement inside chute
+        	closing_timer = time.time()
+        	present_timer = closing_timer
+        	movement_sensed = False
 
-			print(f"no movement sensed, time = {present_timer - closing_timer}")
-		elif not movement_boolean and movement_sensed:
-			# movement detected & movement previously detected
-			# ensure timers still set at 0
-			closing_timer = 0
-			present_timer = 0
+		print(f"no movement sensed, time = {present_timer - closing_timer}")
+	elif not movement_boolean and movement_sensed:
+		# movement detected & movement previously detected
+		# ensure timers still set at 0
+		closing_timer = 0
+		present_timer = 0
+		print(f"movement detected in chute still")
+	elif not movement_boolean and not movement_sensed:
+		# movement detected & movement not previosly detected
+		# reset timers & change movement_sensed variable
+		closing_timer = 0
+		present_timer = 0
+		movement_sensed = True
 
-			print(f"movement detected in chute still")
-		elif not movement_boolean and not movement_sensed:
-			# movement detected & movement not previosly detected
-			# reset timers & change movement_sensed variable
-			closing_timer = 0
-			present_timer = 0
-			movement_sensed = True
-
-			print(f"movement detected in chute reseting timers..")
-
+		print(f"movement detected in chute reseting timers..")
 
 ################################################ PACKAGE CHUTE FUNCTIONS
 
