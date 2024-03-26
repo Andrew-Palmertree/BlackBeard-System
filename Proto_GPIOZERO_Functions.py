@@ -1,4 +1,4 @@
-from gpiozero import DistanceSensor, Servo, RGBLED, DigitalOutputDevice
+from gpiozero import DistanceSensor, AngularServo, RGBLED, DigitalOutputDevice
 import time
 
 
