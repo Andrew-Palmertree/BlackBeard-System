@@ -6,7 +6,7 @@ while True:
 	num_in = str(input("Enter a number:\n1. OPERATE SERVO CHUTE\n2.OPERATE SOLENOID\n"))
 	if num_in=="1":
 		print("Servo Operate chosen")
-		PROTO_GPIO.activate_chute(frontServo, backServo)
+		PROTO_GPIO.activate_chute()
 	elif num_in=="2":
 		print("Solenoid Operate  chosen")
 		PROTO_GPIO.unlock_door()
