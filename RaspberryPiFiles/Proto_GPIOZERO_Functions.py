@@ -212,7 +212,7 @@ def sense_movement():
 	inside of the package chute.
 	"""
 
-	dist_curr = get_distance()
+	dist_curr = ultrasonic.distance()
     	dist_prev = dist_curr
 
     	start_time = time.time()
@@ -225,7 +225,7 @@ def sense_movement():
     	while (present_timer - closing_timer < TIME_NO_MOVEMENT):
         	time.sleep(TIME_SLEEP_DIST_SENS)
         	dist_prev = dist_curr  # set prev distance to current
-        	dist_curr = get_distance()
+        	dist_curr = ultrasonic.distance()
         	print(f"current dist: {dist_curr}\tprevious dist: {dist_prev}")
         	movement_boolean = (dist_curr < dist_prev + 4 and dist_prev - 4 < dist_curr)
 
