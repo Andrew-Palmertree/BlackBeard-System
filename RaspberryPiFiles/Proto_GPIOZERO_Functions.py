@@ -77,6 +77,16 @@ GPIO.setup(SOLENOID_RETRACT_PIN, GPIO.OUT)
 		print(f"Angle: {servo_angle} | PWM: {pwm_val}")
 """
 
+def sleep_function(SLEEP_TIME):
+	"""
+ 	Manually sets a time to pause execution of the code while allowing for
+  	threaded applications to still execute on the SOC
+ 	"""
+	timer_counter = time.time()
+
+	if time.time() - time_counter >= SLEEP_TIME:
+	time_counter = time.time() #
+
 def front_servo_open():
 	"""
 	Controls the speed at which the front servo motor is able to open
@@ -131,7 +141,7 @@ def solenoid_pulse(SOLENOID_PIN):
 	print(f"PULSE TIME = {PULSE_TIME}")
 
 	SOLENOID_PIN.on()
-	time.sleep(PULSE_TIME)
+	sleep_function(PULSE_TIME)
 	SOLENOID_PIN.off()
 
 def solenoid_extend():
@@ -165,9 +175,9 @@ def led_blink_on(color):
 	# Blink code
 	for i in range(0, 3):
 		blink_led.off()
-		time.sleep(0.7)
+		sleep_function(0.7)
 		blink_led.color = led_color
-		time.sleep(0.7)
+		sleep_functions(0.7)
 
 def led_blink_off(color):
 	"""
@@ -184,9 +194,9 @@ def led_blink_off(color):
 	# Blink code
 	for i in range(0, 3):
 		blink_led.color = led_color
-		time.sleep(0.7)
+		sleep_fuction(0.7)
 		blink_led.off()
-		time.sleep(0.7)
+		sleep_function(0.7)
 
 ################################################ ULTRASONIC FUNCTIONS
 """
@@ -232,7 +242,7 @@ def sense_movement():
 	present_timer = 0
 
 	while (present_timer - closing_timer < TIME_NO_MOVEMENT):
-		time.sleep(TIME_SLEEP_DIST_SENS)
+		sleep_function(TIME_SLEEP_DIST_SENS)
 		dist_prev = dist_curr  # set prev distance to current
 		dist_curr = ultrasonic.distance * 100
 		print(f"current dist: {dist_curr}\tprevious dist: {dist_prev}")
@@ -284,17 +294,17 @@ def activate_chute():
 	led_blink_on(CHUTE_LED_COLOR)
 
 	front_servo_open()
-	time.sleep(TIME_BEFORE_DIST_SENS)
+	sleep_function(TIME_BEFORE_DIST_SENS)
 
 	sense_movement()
 
 	led_blink_off(CHUTE_LED_COLOR)
 
 	front_servo_close()
-	time.sleep(1)
+	sleep_function(1)
 
 	back_servo_open()
-	time.sleep(TIME_REAR_CHUTE_OPEN)
+	sleep_function(TIME_REAR_CHUTE_OPEN)
 	back_servo_close()
 
 	print("CHUTE OPERATION COMPLETE")
@@ -312,7 +322,7 @@ def unlock_door():
 
 	led_blink_on(DOOR_LED_COLOR)
 
-	time.sleep(0.3)
+	sleep_function(0.3)
 
 	solenoid_retract()
 
@@ -326,6 +336,6 @@ def lock_door():
 
 	led_blink_off(DOOR_LED_COLOR)
 
-	time.sleep(0.3)
+	sleep_function(0.3)
 
 	solenoid_extend()
