@@ -32,8 +32,8 @@ BACK_OPEN_ANGLE = 135
 BACK_CLOSE_ANGLE = 0
 
 ############################# LED Color Constants
-CHUTE_LED_COLOR = (0, 0, 1)  # Blue
-DOOR_LED_COLOR = (0, 1, 0)   # Green
+CHUTE_LED_COLOR = "blue"
+DOOR_LED_COLOR = "green"
 
 
 ################################################ GPIO INITIALIZATION
@@ -42,9 +42,10 @@ DOOR_LED_COLOR = (0, 1, 0)   # Green
 ultrasonic = DistanceSensor(trigger = TRIG_PIN, echo = ECHO_PIN)
 frontServo = AngularServo(FRONT_SERVO_PIN, min_angle=-135, max_angle=135)
 backServo = AngularServo(BACK_SERVO_PIN, min_angle=-135, max_angle=135)
-led = RGBLED(RED_PIN, GREEN_PIN, BLUE_PIN)
-extend = DigitalOutputDevice(SOLENOID_EXTEND_PIN, initial_value(False))
-retract = DigitalOutputDevice(SOLENOID_RETRACT_PIN, initial_value(False))
+led = RGBLED(red = RED_PIN, green = GREEN_PIN, blue = BLUE_PIN)
+solenoidEn = DigitalOutputDevice(SOLENOID_EN_PIN)
+extend = DigitalOutputDevice(SOLENOID_EXTEND_PIN)
+retract = DigitalOutputDevice(SOLENOID_RETRACT_PIN)
 
 
 ###
@@ -115,13 +116,19 @@ def solenoid_pulse(SOLENOID_PIN):
 	to the solenoid and either extend or retract
 	"""
 
+	solenoidEn.on()
+
 	PULSE_TIME = 0.04
 
 	# define length of pulse sent to the solenoid
 	if SOLENOID_PIN == extend:
 		PULSE_TIME = 0.04
+		print("EXTEND")
 	elif SOLENOID_PIN == retract:
 		PULSE_TIME = 0.07
+		print("RETRACT")
+
+	print(f"PULSE TIME = {PULSE_TIME}")
 
 	SOLENOID_PIN.on()
 	time.sleep(PULSE_TIME)
@@ -150,19 +157,17 @@ def led_blink_on(color):
 	blink_led = led
 
 	if color=="green":
-		blink_led.color = (0, 1, 0)
+		led_color = (0, 1, 0)
+		print(f"color!")
 	elif color=="blue":
-		blink_led.color = (0, 0, 1)
+		led_color = (0, 0, 1)
 
 	# Blink code
-	blink_led.pulse(on_color(blink_led.color), off_color(0, 0, 0), n=3)
-	"""
-    for i in range(0, 3):
-        blink_led.on()
-        time.sleep(0.7)
-        blink_led.off()
-        time.sleep(0.7)
-    """
+	for i in range(0, 3):
+		blink_led.off()
+		time.sleep(0.7)
+		blink_led.color = led_color
+		time.sleep(0.7)
 
 def led_blink_off(color):
 	"""
@@ -170,23 +175,27 @@ def led_blink_off(color):
 	laeves the LED OFF until ledBlinkOn is ran
 	"""
 	blink_led = led
-	
+
 	if color=="green":
-		ledcolor = blink_led.color = (0, 1, 0)
+		led_color = (0, 1, 0)
 	elif color=="blue":
-		ledcolor = blink_led.color = (0, 0, 1)
+		led_color = (0, 0, 1)
 
 	# Blink code
-	blink_led.pulse(on_color(ledcolor), off_color(0, 0, 0), n=3)
-
+	for i in range(0, 3):
+		blink_led.color = led_color
+		time.sleep(0.7)
+		blink_led.off()
+		time.sleep(0.7)
 
 ################################################ ULTRASONIC FUNCTIONS
 """
 def get_distance():
-	""
+"
 	Sends an ultrasonic trigger, listens for the echo, & calculates the distance.
 	Returns distance.
-	""
+
+
 	# send pulse to trigger pin to send ultrasound wave
 	ultrasonic.trigger()
 	print("sent trigger")
@@ -195,15 +204,15 @@ def get_distance():
 	stop_time = time.time()
 
 	print("waiting for echo")
-	while ultrasonic.distance == 0:
-        	start_time = time.time()
-    	while ultrasonic.distance > 0:
-        	stop_time = time.time()
+	while ultrasonic.max_distance == 0:
+		start_time = time.time()
+	while ultrasonic.distance > 0:
+		stop_time = time.time()
 
-    	print("calculating distance")
-    	# calculate time elapsed, then multiply by speed of sound
-    	dist = (stop_time - start_time) * 34300 / 2  # divide by 2 since pulse travels there and back
-    	return dist
+	print("calculating distance")
+	# calculate time elapsed, then multiply by speed of sound
+	dist = (stop_time - start_time) * 34300 / 2  # divide by 2 since pulse travels there and back
+	return dist
 """
 def sense_movement():
 	"""
@@ -213,29 +222,29 @@ def sense_movement():
 	"""
 
 	dist_curr = round((ultrasonic.distance) * 100, 4)
-    	dist_prev = dist_curr
+	dist_prev = dist_curr
 
-    	start_time = time.time()
-    	timer = time.time()
+	start_time = time.time()
+	timer = time.time()
 
-    	movement_sensed = True
-    	closing_timer = 0
-    	present_timer = 0
+	movement_sensed = True
+	closing_timer = 0
+	present_timer = 0
 
-    	while (present_timer - closing_timer < TIME_NO_MOVEMENT):
-        	time.sleep(TIME_SLEEP_DIST_SENS)
-        	dist_prev = dist_curr  # set prev distance to current
-        	dist_curr = round((ultrasonic.distance) * 100, 4)
-        	print(f"current dist: {dist_curr}\tprevious dist: {dist_prev}")
-        	movement_boolean = (dist_curr < dist_prev + 4 and dist_prev - 4 < dist_curr)
+	while (present_timer - closing_timer < TIME_NO_MOVEMENT):
+		time.sleep(TIME_SLEEP_DIST_SENS)
+		dist_prev = dist_curr  # set prev distance to current
+		dist_curr = ultrasonic.distance * 100
+		print(f"current dist: {dist_curr}\tprevious dist: {dist_prev}")
+		movement_boolean = (dist_curr < dist_prev + 4 and dist_prev - 4 < dist_curr)
 
-        	# analyze different scenarios while sensing for pack
-        	if movement_boolean and movement_sensed:
-         		# no movement detected & movement previously detected
-        		# start logging time that there is no movement inside chute
-        		closing_timer = time.time()
-        		present_timer = closing_timer
-        		movement_sensed = False
+		# analyze different scenarios while sensing for pack
+		if movement_boolean and movement_sensed:
+			# no movement detected & movement previously detected
+			# start logging time that there is no movement inside chute
+			closing_timer = time.time()
+			present_timer = closing_timer
+			movement_sensed = False
 
 			print(f"no movement sensed! starting timing for closing..")
 		elif movement_boolean and not movement_sensed:
@@ -249,6 +258,7 @@ def sense_movement():
 			# ensure timers still set at 0
 			closing_timer = 0
 			present_timer = 0
+
 			print(f"movement detected in chute still")
 		elif not movement_boolean and not movement_sensed:
 			# movement detected & movement not previosly detected
@@ -258,6 +268,7 @@ def sense_movement():
 			movement_sensed = True
 
 			print(f"movement detected in chute reseting timers..")
+
 
 ################################################ PACKAGE CHUTE FUNCTIONS
 
