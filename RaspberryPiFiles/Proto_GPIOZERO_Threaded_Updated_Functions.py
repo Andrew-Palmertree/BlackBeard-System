@@ -1,6 +1,8 @@
 from gpiozero import DistanceSensor, AngularServo, RGBLED, DigitalOutputDevice
 import time
+from gpiozero.pins.pigpio import PiGPIOFactory
 import threading
+factory = PiGPIOFactory()
 
 ################################################# CONSTANT DECLARATIONS
 
@@ -27,10 +29,17 @@ TIME_REAR_CHUTE_OPEN = 10
 TIME_BETWEEN_LOCK_UNLOCK = 3
 
 ############################# Servo Angle Constants
-FRONT_OPEN_ANGLE = 60
-FRONT_CLOSE_ANGLE = 0
-BACK_OPEN_ANGLE = 135
-BACK_CLOSE_ANGLE = 0
+FRONT_OPEN_ANGLE = -35
+FRONT_CLOSE_ANGLE = -135
+BACK_OPEN_ANGLE = 30
+BACK_CLOSE_ANGLE = 135
+STEPS = 100
+BACK_STEPS = 250
+FRONTSTEP_SIZE = abs((FRONT_OPEN_ANGLE-FRONT_CLOSE_ANGLE)/STEPS)
+FRONTBACK_STEP_SIZE = abs((FRONT_OPEN_ANGLE-FRONT_CLOSE_ANGLE)/BACK_STEPS)
+
+BACKSTEP_SIZE = abs((BACK_OPEN_ANGLE-BACK_CLOSE_ANGLE)/STEPS)
+BACKBACK_STEP_SIZE = abs((BACK_OPEN_ANGLE-BACK_CLOSE_ANGLE)/BACK_STEPS)
 
 ############################# LED Color Constants
 CHUTE_LED_COLOR = "blue"
@@ -41,28 +50,12 @@ DOOR_LED_COLOR = "green"
 
 #Updated for RPI 5
 ultrasonic = DistanceSensor(trigger = TRIG_PIN, echo = ECHO_PIN)
-frontServo = AngularServo(FRONT_SERVO_PIN, min_angle=-45, max_angle=225, min_pulse_width=0.0005, max_pulse_width=0.0025)
-backServo = AngularServo(BACK_SERVO_PIN, min_angle=-225, max_angle=45, min_pulse_width=0.0005, max_pulse_width=0.0025)
+frontServo = AngularServo(FRONT_SERVO_PIN, initial_angle = FRONT_CLOSE_ANGLE, min_angle=-135, max_angle=135, min_pulse_width=0.0005, max_pulse_width=0.0025, pin_factory=factory)
+backServo = AngularServo(BACK_SERVO_PIN, initial_angle = BACK_CLOSE_ANGLE, min_angle=-135, max_angle=135, min_pulse_width=0.0005, max_pulse_width=0.0025, pin_factory=factory)
 led = RGBLED(red = RED_PIN, green = GREEN_PIN, blue = BLUE_PIN)
 solenoidEn = DigitalOutputDevice(SOLENOID_EN_PIN)
 extend = DigitalOutputDevice(SOLENOID_EXTEND_PIN)
 retract = DigitalOutputDevice(SOLENOID_RETRACT_PIN)
-
-
-###
-"""
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-GPIO.setup(RED_PIN, GPIO.OUT)
-GPIO.setup(GREEN_PIN, GPIO.OUT)
-GPIO.setup(BLUE_PIN, GPIO.OUT)
-GPIO.setup(TRIG_PIN, GPIO.OUT)
-GPIO.setup(ECHO_PIN, GPIO.IN)
-GPIO.setup(FRONT_SERVO_PIN, GPIO.OUT)
-GPIO.setup(BACK_SERVO_PIN, GPIO.OUT)
-GPIO.setup(SOLENOID_EXTEND_PIN, GPIO.OUT)
-GPIO.setup(SOLENOID_RETRACT_PIN, GPIO.OUT)
-"""
 
 ################################################ THREADING FUNCTIONS
 
@@ -74,44 +67,72 @@ def create_door_thread():
 
 ################################################ SERVO FUNCTIONS
 
-"""def servo_write(pwm_obj, angle):
-	"
-	Calculates the PWM duty cycle to send to the servo motor given
-	an angle (degrees) 
-	"
-	for servo_angle in range(0,280,10):
-		pwm_val = (servo_angle*US_TO_DUTY)+2.5
-		pwm_obj.ChangeDutyCycle(pwm_val)
-		print(f"Angle: {servo_angle} | PWM: {pwm_val}")
-"""
-
 def front_servo_open():
 	"""
 	Controls the speed at which the front servo motor is able to open
 	"""
-	frontServo.angle = FRONT_OPEN_ANGLE
-	# implement some function to control speed servo opens and closes
+	CURRENT_POS = frontServo.angle;
+	
+	#For loop to slowly move the motor
+    	for _ in range(STEPS):
+        	CURRENT_POS += FRONTSTEP_SIZE
+        	frontServo.angle = CURRENT_POS
+        	time.sleep(.02)
+    	#Ensures it gets to the desired angle
+    	frontServo.angle = FRONT_OPEN_ANGLE
 
 def front_servo_close():
 	"""
 	Controls the speed at which the front servo motor is able to close
 	"""
-	frontServo.angle = FRONT_CLOSE_ANGLE
-	# functon to control speed hre
+    	CURRENT_POS = frontServo.angle;
+    
+    	#For loop to slowly move the motor
+    	for _ in range(BACK_STEPS):
+        	CURRENT_POS -= FRONTBACK_STEP_SIZE
+        	if (CURRENT_POS <= -135):
+            		frontServo.angle = FRONT_CLOSE_ANGLE
+            		break
+        	else:
+            		frontServo.angle = CURRENT_POS
+            		time.sleep(.02)
+            		print(CURRENT_POS)
+			
+    		#Ensures it gets to the desired angle
+    		frontServo.angle = FRONT_CLOSE_ANGLE
 
 def back_servo_open():
 	"""
 	Controls the speed at which the back servo is able to open
 	"""
-	backServo.angle = BACK_OPEN_ANGLE
-	# function here
+    	CURRENT_POS = backServo.angle;
+    
+   	#For loop to slowly move the motor
+    	for _ in range(STEPS):
+        	CURRENT_POS -= BACKSTEP_SIZE
+        	backServo.angle = CURRENT_POS
+        	time.sleep(.02)
+    	#Ensures it gets to the desired angle
+    	backServo.angle = BACK_OPEN_ANGLE
 
 def back_servo_close():
 	"""
 	Controls the speed at which the back servo is able to close
 	"""
-	backServo.angle = BACK_CLOSE_ANGLE
-	#function ehre
+    	CURRENT_POS = backServo.angle;
+    
+    	#For loop to slowly move the motor
+    	for _ in range(BACK_STEPS):
+        	CURRENT_POS += BACKBACK_STEP_SIZE
+        	if (CURRENT_POS >= 135):
+            		backServo.angle = BACK_CLOSE_ANGLE
+            		break
+        	else:
+            		backServo.angle = CURRENT_POS
+            		time.sleep(.02)
+            		print(CURRENT_POS)
+    	#Ensures it gets to the desired angle
+    	backServo.angle = BACK_CLOSE_ANGLE
 
 
 ################################################ SOLENOID FUNCTIONS
