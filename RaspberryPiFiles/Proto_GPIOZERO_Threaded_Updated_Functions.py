@@ -98,8 +98,8 @@ def front_servo_close():
             		time.sleep(.02)
             		print(CURRENT_POS)
 			
-    		#Ensures it gets to the desired angle
-    		frontServo.angle = FRONT_CLOSE_ANGLE
+    	#Ensures it gets to the desired angle
+    	frontServo.angle = FRONT_CLOSE_ANGLE
 
 def back_servo_open():
 	"""
