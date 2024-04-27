@@ -1,8 +1,6 @@
 from gpiozero import DistanceSensor, AngularServo, RGBLED, DigitalOutputDevice
 import time
-from gpiozero.pins.pigpio import PiGPIOFactory
 import threading
-factory = PiGPIOFactory()
 
 ################################################# CONSTANT DECLARATIONS
 
