@@ -1,0 +1,59 @@
+item {
+  id: 1
+  name: 'amazon'
+}
+
+item {
+  id: 2
+  name: 'amazon uniform'
+}
+
+item {
+  id: 3
+  name: 'delivery car'
+}
+
+item {
+  id: 4
+  name: 'fedex'
+}
+
+item {
+  id: 5
+  name: 'fedex uniform'
+}
+
+item {
+  id: 6
+  name: 'package'
+}
+
+item {
+  id: 7
+  name: 'person'
+}
+
+item {
+  id: 8
+  name: 'safety vest'
+}
+
+item {
+  id: 9
+  name: 'ups'
+}
+
+item {
+  id: 10
+  name: 'ups uniform'
+}
+
+item {
+  id: 11
+  name: 'usps'
+}
+
+item {
+  id: 12
+  name: 'usps uniform'
+}

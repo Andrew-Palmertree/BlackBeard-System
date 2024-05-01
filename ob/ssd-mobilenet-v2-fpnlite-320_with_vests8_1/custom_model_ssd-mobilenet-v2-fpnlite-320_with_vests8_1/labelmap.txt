@@ -1,0 +1,12 @@
+amazon
+amazon_uniform
+delivery_car
+fedex
+fedex_uniform
+package
+person
+safety_vest
+ups
+ups_uniform
+usps
+usps_uniform
